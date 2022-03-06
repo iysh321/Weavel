@@ -10,7 +10,7 @@ class weatherApiController {
   weatherData = async (req, res) => {
     const cityId = req.query.id;
     const areaArray = req.body;
-    const day = moment(new Date().getTime()).add("-1", "d").format("YYYYMMDD");
+    const day = moment(new Date().getTime()).format("YYYYMMDD");
     const base_time = "2300";
     this.weather.deleteCityWeatherData(cityId);
 
