@@ -120,8 +120,6 @@ function PhotoEditModalNew({
   const handlePhotoEdit = (e) => {
     if (formData) {
       for (let pair of formData.entries()) {
-        //string
-        //object
         if (typeof pair[1] === "string") {
           handlePhotoInfoEdit();
         } else if (typeof pair[1] === "object") {
@@ -170,21 +168,18 @@ function PhotoEditModalNew({
         { withCredentials: true }
       )
       .then((res) => {
-        const filterPhoto = allPhotoInfo.filter((photo) => {
-          return photo.id !== photoId;
+        const allPhotoCopy = allPhotoInfo.slice();
+        allPhotoCopy.map((photo) => {
+          if (photo.id === photoId) {
+            photo.image = file.preview.slice(20);
+            photo.filename = file.filename;
+            photo.date = date;
+            photo.area = area;
+            photo.comment = comment;
+            photo.weather = weather;
+          }
         });
-        setAllPhotoInfo([
-          {
-            id: photoId,
-            image: file.preview.slice(20),
-            filename: file.filename,
-            date,
-            area,
-            comment,
-            weather,
-          },
-          ...filterPhoto,
-        ]);
+        setAllPhotoInfo([...allPhotoCopy]);
         photoEditHandler();
       })
       .catch((err) => {
@@ -201,7 +196,12 @@ function PhotoEditModalNew({
             <img src={"./images/upload.svg"} alt="upload" />
           )}
         </div>
-        <input type="file" onChange={(e) => inputHandler(e)} name="file" />
+        <input
+          type="file"
+          accept="image/*"
+          onChange={(e) => inputHandler(e)}
+          name="file"
+        />
       </PhotoUploadFileContainer>
       <label>날짜</label>
       <InputContainer>
@@ -266,7 +266,7 @@ function PhotoEditModalNew({
         <UploadButton
           disabled={isFilled}
           isFilled={isFilled}
-          onClick={handlePhotoEdit}
+          onClick={(e) => handlePhotoEdit(e)}
         >
           수정
         </UploadButton>
